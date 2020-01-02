@@ -1,0 +1,103 @@
+1.) Custom concurrent program
+---------------------------
+SELECT
+    fcp.user_concurrent_program_name        "Concurrent Program Name",
+    exe.executable_name                                   "Executable Name",
+    decode(fcp.execution_method_code, 'I', 'PL/SQL Stored Procedure', 'H', 'Host',
+           'S', 'Immediate', 'J', 'Java Stored Procedure', 'K',
+           'Java concurrent program', 'M', 'Multi Language Function', 'P', 'Oracle reports',
+           'B', 'Request Set Stage Function', 'A', 'Spawned', 'L',
+           'SQL*Loader', 'Q', 'SQL*Plus', 'E', 'Pearl concurrent Programm',
+           'Unkown Type') "Execution Type",
+    exe.execution_file_name                                 "File Name"
+FROM
+    fnd_executables_form_v       exe,
+    fnd_concurrent_programs_vl   fcp
+WHERE
+    exe.executable_id = fcp.executable_id
+    AND exe.application_id = fcp.application_id
+    AND exe.executable_name LIKE 'XXAQ%';
+   
+
+============================================================================================
+2.) Custom Message
+---------------
+select *
+from fnd_new_messages
+where message_name like 'XXAQ%';
+=======================================================================================
+
+3.) Custom profiles
+-------------------
+ Site Level
+----------
+select fpot.USER_PROFILE_OPTION_NAME, 
+	   fpov.profile_option_value 
+from   	   apps.fnd_profile_options fpo,
+	   apps.fnd_profile_options_tl fpot,
+	   apps.fnd_profile_option_values fpov
+where  
+	   fpo.profile_option_name = fpot.profile_option_name
+and	   fpot.language = 'US'
+and	   fpov.profile_option_id = fpo.profile_option_id
+and	   fpov.level_id = 10001
+and fpot.user_profile_option_name like 'XX%'
+order by 1, 2 
+
+User Level
+------------
+
+select fpot.user_profile_option_name
+, fpov.profile_option_value 
+, decode(fpov.level_id, 10001, 'Site', 10002, 'Application', 10003, 'Responsibility', 10004, 'User') which_level
+from apps.fnd_profile_option_values fpov
+, apps.fnd_profile_options fpo
+, apps.fnd_profile_options_tl fpot
+where fpov.level_id = 10004
+--and fpov.level_value = (select fu.user_id from apps.fnd_user fu where upper(fu.user_name) like 'Arqiva%')
+and fpov.profile_option_id = fpo.profile_option_id 
+and fpo.profile_option_name = fpot.profile_option_name  
+and fpot.user_profile_option_name like 'Arqiva%'
+and fpot.language = 'US'
+ORDER BY fpot.user_profile_option_name
+
+RESPONSIBILITY LEVEL PROFILE
+-----------------------------
+  select fpot.USER_PROFILE_OPTION_NAME, 
+	   frt.responsibility_name, 
+	   fpov.profile_option_value 
+from   	   apps.fnd_profile_options fpo, 
+	   apps.fnd_profile_options_tl fpot, 
+	   apps.fnd_profile_option_values fpov, 
+	   apps.fnd_RESPONSIBILITY_tl frt 
+where 
+	   fpo.profile_option_name = fpot.profile_option_name 
+and	   fpot.language = 'US' 
+and	   fpov.profile_option_id = fpo.profile_option_id 
+and	   fpov.level_id = 10003 
+and	   fpov.level_value = frt.responsibility_id 
+and	   frt.language = 'US' 
+and frt.Responsibility_name like 'Arqiva%'
+order by 1, 2
+
+
+APPLICATION LEVEL PROFILE
+---------------------------------
+
+select fpot.USER_PROFILE_OPTION_NAME, 
+	   fat.application_name, 
+	   fpov.profile_option_value 
+from	   apps.fnd_profile_options fpo, 
+	   apps.fnd_profile_options_tl fpot, 
+	   apps.fnd_profile_option_values fpov, 
+	   apps.fnd_application_tl fat 
+where 
+	   fpo.profile_option_name = fpot.profile_option_name 
+and	   fpot.language = 'US' 
+and	   fpov.profile_option_id = fpo.profile_option_id 
+and	   fpov.level_id = 10002 
+and	   fpov.level_value = fat.application_id 
+and	   fat.language = 'US' 
+and fpot.USER_PROFILE_OPTION_NAME like 'Arqiva%'
+order by 1, 2
+=====================================================================================

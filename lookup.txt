@@ -1,0 +1,22 @@
+SELECT
+    fat.application_name,
+    flt.lookup_type,
+    flv.lookup_code,
+    flv.meaning,
+    flv.description
+FROM
+    fnd_lookup_types     flt,
+    fnd_lookup_values    flv,
+    fnd_application_tl   fat
+WHERE
+    flt.lookup_type = flv.lookup_type
+    AND fat.application_id = flt.application_id
+    AND ( fat.application_name LIKE '%Arqiva%'
+          OR upper(flt.lookup_type) LIKE '%XXAQV%' );
+
+
+
+
+INSERT INTO custom_aol_objects (AOL_obj_name,aol_object_type)
+select Lookup_type,'Lookup' from fnd_lookup_types 
+          where lookup_type LIKE 'XX%'

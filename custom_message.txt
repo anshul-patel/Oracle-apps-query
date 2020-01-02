@@ -1,0 +1,9 @@
+select *
+from fnd_new_messages
+where message_name like 'XXAQ%';
+
+
+INSERT INTO custom_aol_objects (AOL_obj_name,aol_object_type)
+select message_name,'MESSAGE'
+from fnd_new_messages
+where message_name like 'XXAQ%';

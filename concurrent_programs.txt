@@ -1,0 +1,32 @@
+SELECT
+    fcp.user_concurrent_program_name        "Concurrent Program Name",
+    exe.executable_name                                   "Executable Name",
+    decode(fcp.execution_method_code, 'I', 'PL/SQL Stored Procedure', 'H', 'Host',
+           'S', 'Immediate', 'J', 'Java Stored Procedure', 'K',
+           'Java concurrent program', 'M', 'Multi Language Function', 'P', 'Oracle reports',
+           'B', 'Request Set Stage Function', 'A', 'Spawned', 'L',
+           'SQL*Loader', 'Q', 'SQL*Plus', 'E', 'Pearl concurrent Programm',
+           'Unkown Type') "Execution Type",
+    exe.execution_file_name                                 "File Name"
+FROM
+    fnd_executables_form_v       exe,
+    fnd_concurrent_programs_vl   fcp
+WHERE
+    exe.executable_id = fcp.executable_id
+    AND exe.application_id = fcp.application_id
+    AND exe.executable_name LIKE 'XXAQ%';
+
+
+
+INSERT INTO XXAQV.XXAQV_CUSTOM_AOL_OBJECTS (AOL_obj_name,short_name,aol_object_type)
+SELECT
+    fcp.user_concurrent_program_name        ,
+    exe.executable_name         ,
+    'Concurrent_Program'
+FROM
+    fnd_executables_form_v       exe,
+    fnd_concurrent_programs_vl   fcp
+WHERE
+    exe.executable_id = fcp.executable_id
+    AND exe.application_id = fcp.application_id
+    AND exe.executable_name LIKE 'XXAQ%';

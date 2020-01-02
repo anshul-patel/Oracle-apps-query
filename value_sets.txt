@@ -1,0 +1,26 @@
+SELECT
+    ffvs.flex_value_set_name,
+    ffvs.description   set_description,
+    decode(ffvs.validation_type,'I','Independent','D','Dependent')"Validation Type",
+    --ffvs.validation_type,
+    ffvt.description   value_description
+FROM
+    fnd_flex_value_sets   ffvs,
+    fnd_flex_values       ffv,
+    fnd_flex_values_tl    ffvt
+WHERE
+    ffvs.flex_value_set_id = ffv.flex_value_set_id
+    AND ffv.flex_value_id = ffvt.flex_value_id
+and ffvs.flex_value_set_name like 'XXAQ%'
+ORDER BY
+    flex_value ASC
+
+
+
+
+INSERT INTO custom_aol_objects (AOL_obj_name,aol_object_type)
+ select ffvs.flex_value_set_name,'VALUE SET'
+    FROM
+    fnd_flex_value_sets   ffvs
+    where
+    ffvs.flex_value_set_name like 'XX%'
